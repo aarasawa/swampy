@@ -27,7 +27,7 @@ export default function Nav({ currentPath }: NavProps) {
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    ReactGA.initialize("G-XXXXXXXXXX");
+    ReactGA.initialize("G-8WBV9RC79L");
     ReactGA.send({ hitType: "pageview", page: currentPath });
   }, [currentPath]);
 
