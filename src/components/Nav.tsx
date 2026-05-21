@@ -19,7 +19,6 @@ const SECONDARY_LINKS = [
   { label: "Writing", path: "/writing" },
   { label: "Reading", path: "/reading" },
   { label: "Cinema",  path: "/cinema" },
-  { label: "Now",     path: "/now" },
 ];
 
 export default function Nav({ currentPath }: NavProps) {

@@ -1,5 +1,7 @@
 @use "../styles/variables" as *;
 
+// ── CAROUSEL ─────────────────────────────────────────────
+
 .projector {
   position: relative;
   width: 100%;
@@ -38,7 +40,7 @@
     @media (max-width: 768px) {
       width: min(100%, calc(100vw - 3rem));
       height: 260px;
-      perspective: none; // disable 3D on mobile — side cards are hidden anyway
+      perspective: none;
     }
 
     @media (max-width: 640px) {
@@ -89,10 +91,7 @@
 
     &:active {
       transform: translateY(-50%) scale(0.94);
-
-      @media (max-width: 640px) {
-        transform: scale(0.94);
-      }
+      @media (max-width: 640px) { transform: scale(0.94); }
     }
 
     &--left {
@@ -133,6 +132,8 @@
   }
 }
 
+// ── CAROUSEL SLIDES ───────────────────────────────────────
+
 .slide {
   position: absolute;
   width: 100%;
@@ -163,7 +164,6 @@
     box-shadow: 0 0 40px rgba($color-amber-base, 0.15);
   }
 
-  // On mobile: hide all non-center slides entirely
   &--left1, &--left2, &--right1, &--right2 {
     @media (max-width: 640px) {
       opacity: 0 !important;
@@ -191,9 +191,7 @@
       image-rendering: pixelated;
     }
 
-    @media (max-width: 640px) {
-      display: none; // hide pixel art panel on mobile — too narrow
-    }
+    @media (max-width: 640px) { display: none; }
   }
 
   &__info {
@@ -204,14 +202,12 @@
     justify-content: space-between;
     overflow: hidden;
 
-    @media (max-width: 640px) {
-      padding: 1rem;
-    }
+    @media (max-width: 640px) { padding: 1rem; }
   }
 
   &__num {
     font-family: $font-mono;
-    font-size: 0.58rem;
+    font-size: 0.75rem;
     color: $color-amber-dim;
     letter-spacing: 3px;
     margin-bottom: 0.6rem;
@@ -219,20 +215,18 @@
 
   &__title {
     font-family: $font-display;
-    font-size: 1.7rem;
+    font-size: 1.75rem;
     color: $color-amber-base;
     letter-spacing: 2px;
     line-height: 1.05;
     @include terminal-glow;
     margin-bottom: 0.5rem;
 
-    @media (max-width: 640px) {
-      font-size: 1.3rem;
-    }
+    @media (max-width: 640px) { font-size: 1.3rem; }
   }
 
   &__desc {
-    font-size: 0.8rem;
+    font-size: 0.90rem;
     color: rgba($color-amber-base, 0.6);
     line-height: 1.7;
     flex: 1;
@@ -256,7 +250,7 @@
 
   &__tag {
     font-family: $font-mono;
-    font-size: 0.55rem;
+    font-size: 0.75rem;
     letter-spacing: 1px;
     text-transform: uppercase;
     color: $color-amber-dim;
@@ -266,7 +260,7 @@
 
   &__cta {
     font-family: $font-mono;
-    font-size: 0.6rem;
+    font-size: 0.75rem;
     letter-spacing: 2px;
     text-transform: uppercase;
     color: $color-amber-dim;
@@ -274,14 +268,13 @@
     opacity: 0;
     transition: opacity 0.25s;
 
-    .slide--center & {
-      opacity: 1;
-    }
-
+    .slide--center & { opacity: 1; }
     &::before { content: '[ '; }
     &::after  { content: ' ]'; }
   }
 }
+
+// ── EXPANDED SCREEN ───────────────────────────────────────
 
 .screen {
   position: fixed;
@@ -294,23 +287,18 @@
   &__overlay {
     position: fixed;
     inset: 0;
-    background:
-      radial-gradient(
-        circle at center,
-        rgba(0, 0, 0, 0.18) 0%,
-        rgba(0, 0, 0, 0.72) 100%
-      );
+    background: radial-gradient(
+      circle at center,
+      rgba(0,0,0,0.18) 0%,
+      rgba(0,0,0,0.72) 100%
+    );
     backdrop-filter: blur(3px);
     z-index: 4999;
     opacity: 0;
-    transition:
-      opacity 0.35s ease,
-      backdrop-filter 0.35s ease;
+    transition: opacity 0.35s ease, backdrop-filter 0.35s ease;
     pointer-events: none;
 
-    // Keep --open for your current TSX, add --active for the new viewer state.
-    &--open,
-    &--active {
+    &--open, &--active {
       opacity: 1;
       pointer-events: all;
     }
@@ -321,36 +309,27 @@
     inset: 0;
     z-index: 5002;
     background: $color-terminal-panel;
-    background-image:
-      repeating-linear-gradient(
-        to bottom,
-        rgba(255, 255, 255, 0.015) 0px,
-        rgba(255, 255, 255, 0.015) 1px,
-        transparent 1px,
-        transparent 3px
-      );
+    background-image: repeating-linear-gradient(
+      to bottom,
+      rgba(255,255,255,0.015) 0px,
+      rgba(255,255,255,0.015) 1px,
+      transparent 1px,
+      transparent 3px
+    );
     overflow-y: auto;
     overflow-x: hidden;
     pointer-events: none;
     opacity: 0;
     transform: scale(0.88) translateY(18px);
     transform-origin: center center;
-    transition:
-      transform 480ms cubic-bezier(.16, 1, .3, 1),
-      opacity 280ms ease;
+    transition: transform 480ms cubic-bezier(.16,1,.3,1), opacity 280ms ease;
     max-width: 100vw;
     box-shadow: 0 0 80px rgba($color-amber-base, 0.12);
 
-    // --active is the new expansion state. --visible remains compatible with your current TSX.
-    &--active,
-    &--visible {
+    &--active, &--visible {
       transform: scale(1) translateY(0);
       opacity: 1;
       pointer-events: all;
-    }
-
-    &--active {
-      animation: viewer-stabilize 420ms steps(2, end);
     }
 
     @media (max-width: 640px) {
@@ -358,18 +337,18 @@
     }
   }
 
+  // scan animation
   &__content::before {
     content: "";
     position: absolute;
     inset: 0;
     pointer-events: none;
-    background:
-      linear-gradient(
-        to bottom,
-        transparent 0%,
-        rgba(255, 179, 71, 0.08) 48%,
-        transparent 100%
-      );
+    background: linear-gradient(
+      to bottom,
+      transparent 0%,
+      rgba(255,179,71,0.08) 48%,
+      transparent 100%
+    );
     transform: translateY(-100%);
     opacity: 0;
     z-index: 5;
@@ -380,6 +359,38 @@
     animation: archive-scan 700ms ease-out 120ms both;
   }
 
+  // staggered fade-in for children
+  &__bar,
+  &__left,
+  &__info > * {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  &__content--active,
+  &__content--visible {
+    .screen__bar,
+    .screen__left,
+    .screen__info > * {
+      opacity: 1;
+      transform: translateY(0);
+      transition: opacity 320ms ease, transform 320ms ease;
+    }
+
+    .screen__bar         { transition-delay: 40ms; }
+    .screen__left        { transition-delay: 80ms; }
+
+    .screen__info > *:nth-child(1) { transition-delay: 120ms; }
+    .screen__info > *:nth-child(2) { transition-delay: 170ms; }
+    .screen__info > *:nth-child(3) { transition-delay: 220ms; }
+    .screen__info > *:nth-child(4) { transition-delay: 270ms; }
+    .screen__info > *:nth-child(5) { transition-delay: 320ms; }
+    .screen__info > *:nth-child(6) { transition-delay: 370ms; }
+    .screen__info > *:nth-child(7) { transition-delay: 420ms; }
+    .screen__info > *:nth-child(8) { transition-delay: 470ms; }
+  }
+
+  // status strip
   &__activation {
     display: flex;
     justify-content: space-between;
@@ -408,49 +419,13 @@
     }
   }
 
-  &__bar,
-  &__art-frame,
-  &__info > * {
-    opacity: 0;
-    transform: translateY(8px);
-  }
-
-  &__content--active,
-  &__content--visible {
-    .screen__bar,
-    .screen__art-frame,
-    .screen__info > * {
-      opacity: 1;
-      transform: translateY(0);
-      transition:
-        opacity 320ms ease,
-        transform 320ms ease;
-    }
-
-    .screen__bar {
-      transition-delay: 40ms;
-    }
-
-    .screen__art-frame {
-      transition-delay: 70ms;
-    }
-
-    .screen__info > *:nth-child(1) { transition-delay: 120ms; }
-    .screen__info > *:nth-child(2) { transition-delay: 170ms; }
-    .screen__info > *:nth-child(3) { transition-delay: 220ms; }
-    .screen__info > *:nth-child(4) { transition-delay: 270ms; }
-    .screen__info > *:nth-child(5) { transition-delay: 320ms; }
-    .screen__info > *:nth-child(6) { transition-delay: 370ms; }
-    .screen__info > *:nth-child(7) { transition-delay: 420ms; }
-    .screen__info > *:nth-child(8) { transition-delay: 470ms; }
-  }
-
+  // sticky top bar — single exit button
   &__bar {
     position: sticky;
     top: 0;
     background: $color-terminal-panel;
     border-bottom: 1px solid rgba($color-amber-base, 0.1);
-    padding: 0.5rem 1.2rem;
+    padding: 0.5rem 1.5rem;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -458,9 +433,7 @@
     min-width: 0;
     z-index: 6;
 
-    @media (max-width: 480px) {
-      padding: 0.55rem 0.85rem;
-    }
+    @media (max-width: 480px) { padding: 0.55rem 0.85rem; }
   }
 
   &__bar-title {
@@ -493,16 +466,29 @@
     }
   }
 
+  // ── BODY: wide two-column on desktop ──
   &__body {
     width: 100%;
-    max-width: 860px;
+    max-width: min(1400px, calc(100vw - 4rem)); // use more of the screen
     min-width: 0;
     margin: 0 auto;
-    padding: 2.5rem 2rem 4rem;
+    padding: 3rem 3rem 5rem;
     display: grid;
-    grid-template-columns: minmax(0, 320px) minmax(0, 1fr);
-    gap: 2.5rem;
+    grid-template-columns: minmax(0, 420px) minmax(0, 1fr); // wider art column
+    gap: 4rem;
     align-items: start;
+
+    @media (max-width: 1200px) {
+      max-width: calc(100vw - 4rem);
+      gap: 3rem;
+      grid-template-columns: minmax(0, 360px) minmax(0, 1fr);
+    }
+
+    @media (max-width: 900px) {
+      grid-template-columns: minmax(0, 300px) minmax(0, 1fr);
+      gap: 2rem;
+      padding: 2rem 2rem 4rem;
+    }
 
     @media (max-width: 768px) {
       grid-template-columns: minmax(0, 1fr);
@@ -515,13 +501,26 @@
     }
   }
 
+  // ── LEFT COLUMN: art + meta + links ──
+  &__left {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+    position: sticky;
+    top: 4rem; // stick below the bar as you scroll the right column
+
+    @media (max-width: 768px) {
+      position: static;
+    }
+  }
+
   &__art-frame {
     min-width: 0;
     max-width: 100%;
     border: 1px solid rgba($color-amber-base, 0.2);
     overflow: hidden;
     image-rendering: pixelated;
-    box-shadow: 0 0 30px rgba($color-amber-base, 0.06);
+    box-shadow: 0 0 40px rgba($color-amber-base, 0.08);
 
     canvas {
       width: 100%;
@@ -533,7 +532,7 @@
     @media (max-width: 640px) {
       width: 100%;
       aspect-ratio: 16 / 9;
-      max-height: 180px;
+      max-height: 200px;
 
       canvas {
         width: 100%;
@@ -543,6 +542,49 @@
     }
   }
 
+  // meta tags — shown in left column on desktop, hidden on mobile
+  &__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+
+    @media (max-width: 768px) { display: none; }
+  }
+
+  // links — shown in left column on desktop, hidden on mobile
+  &__links {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+
+    @media (max-width: 768px) { display: none; }
+  }
+
+  // meta tags shown inline on mobile only
+  &__meta-mobile {
+    display: none;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin-bottom: 0.4rem;
+
+    @media (max-width: 768px) {
+      display: flex;
+    }
+  }
+
+  // links shown inline on mobile only
+  &__links-mobile {
+    display: none;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    margin-top: 1.5rem;
+
+    @media (max-width: 768px) {
+      display: flex;
+    }
+  }
+
+  // ── RIGHT COLUMN: text content ──
   &__info {
     min-width: 0;
     max-width: 100%;
@@ -550,12 +592,12 @@
 
   &__project-title {
     font-family: $font-display;
-    font-size: clamp(1.8rem, 10vw, 2.8rem);
+    font-size: clamp(2rem, 4vw, 3.5rem); // larger on wide screens
     color: $color-amber-base;
     letter-spacing: 3px;
     @include terminal-glow;
     line-height: 1;
-    margin-bottom: 0.3rem;
+    margin-bottom: 0.4rem;
     overflow-wrap: anywhere;
 
     @media (max-width: 640px) {
@@ -567,11 +609,11 @@
   &__project-sub {
     font-family: $font-mono;
     overflow-wrap: anywhere;
-    font-size: 0.68rem;
+    font-size: 0.7rem;
     color: $color-amber-dim;
     letter-spacing: 2px;
     text-transform: uppercase;
-    margin-bottom: 1.4rem;
+    margin-bottom: 1.5rem;
 
     @media (max-width: 640px) {
       font-size: 0.58rem;
@@ -587,23 +629,25 @@
     letter-spacing: 3px;
     text-transform: uppercase;
     color: $color-amber-dim;
-    margin-bottom: 0.45rem;
-    margin-top: 1.2rem;
+    margin-bottom: 0.5rem;
+    margin-top: 1.4rem;
 
     &::before { content: '// '; }
   }
 
   &__text {
-    font-size: 0.88rem;
+    font-size: 0.92rem;
     min-width: 0;
     overflow-wrap: anywhere;
-    color: rgba($color-amber-base, 0.6);
-    line-height: 1.85;
+    color: rgba($color-amber-base, 0.65);
+    line-height: 1.9;
 
     strong {
       color: rgba($color-amber-base, 0.9);
       font-weight: 400;
     }
+
+    @media (max-width: 640px) { font-size: 0.85rem; }
   }
 
   &__divider {
@@ -629,29 +673,19 @@
     padding: 0.2rem 0.55rem;
   }
 
-  &__links {
-    display: flex;
-    gap: 0.8rem;
-    margin-top: 1.5rem;
-    flex-wrap: wrap;
-
-    @media (max-width: 480px) {
-      gap: 0.6rem;
-    }
-  }
-
+  // desktop links (inside __links, column layout)
   &__link {
     font-family: $font-mono;
-    max-width: 100%;
-    text-align: center;
     font-size: 0.68rem;
     letter-spacing: 2px;
     text-transform: uppercase;
     color: $color-terminal-bg;
     background: $color-amber-dim;
-    padding: 0.5rem 1.1rem;
+    padding: 0.6rem 1.2rem;
     text-decoration: none;
     transition: all 0.15s;
+    text-align: center;
+    display: block;
     @include clip-path-hex;
 
     &:hover {
@@ -664,6 +698,7 @@
       color: $color-amber-dim;
       border: 1px solid rgba($color-amber-base, 0.2);
       clip-path: none;
+      display: block;
 
       &:hover {
         color: $color-amber-bright;
@@ -673,6 +708,8 @@
     }
   }
 }
+
+// ── FILMSTRIP DECORATION ──────────────────────────────────
 
 .filmstrip {
   display: flex;

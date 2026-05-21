@@ -54,20 +54,8 @@
   }
 
   &__item {
-    margin-bottom: 2.5rem;
     position: relative;
     padding-left: 1.5rem;
-
-    &::before {
-      content: '>';
-      position: absolute;
-      left: 0;
-      top: 0.125rem;
-      color: $color-amber-dim;
-      font-family: $font-mono;
-      font-size: 0.8125rem;
-      opacity: 0.5;
-    }
   }
 
   &__item-header {

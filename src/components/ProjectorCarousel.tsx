@@ -33,10 +33,15 @@ const ProjectorCarousel: React.FC<ProjectorCarouselProps> = ({ projects }) => {
   const [isViewerActive, setIsViewerActive] = useState(false);
   const [isContentVisible, setIsContentVisible] = useState(false);
   const [activeProject, setActiveProject] = useState<Project | null>(null);
-  
+
   const lastActiveElement = useRef<HTMLElement | null>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
-  
+
+  // swipe tracking
+  const touchStartX = useRef<number | null>(null);
+  const touchStartY = useRef<number | null>(null);
+  const SWIPE_THRESHOLD = 50;
+
   const N = projects.length;
   const POS_MAP = ['center', 'right1', 'right2', 'hidden', 'hidden', 'hidden', 'left2', 'left1'];
 
@@ -52,14 +57,11 @@ const ProjectorCarousel: React.FC<ProjectorCarouselProps> = ({ projects }) => {
   const openScreen = (idx: number) => {
     lastActiveElement.current = document.activeElement as HTMLElement;
     const proj = projects[idx];
-
     setActiveProject(proj);
     setIsScreenOpen(true);
     document.body.style.overflow = 'hidden';
-
     setTimeout(() => {
       setIsViewerActive(true);
-
       setTimeout(() => {
         setIsContentVisible(true);
         setTimeout(() => closeButtonRef.current?.focus(), 100);
@@ -70,7 +72,6 @@ const ProjectorCarousel: React.FC<ProjectorCarouselProps> = ({ projects }) => {
   const closeScreen = () => {
     setIsContentVisible(false);
     setIsViewerActive(false);
-    
     setTimeout(() => {
       setIsScreenOpen(false);
       setActiveProject(null);
@@ -79,7 +80,7 @@ const ProjectorCarousel: React.FC<ProjectorCarouselProps> = ({ projects }) => {
     }, 420);
   };
 
-  // Keyboard navigation
+  // keyboard navigation
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (isScreenOpen) {
@@ -89,30 +90,53 @@ const ProjectorCarousel: React.FC<ProjectorCarouselProps> = ({ projects }) => {
       if (e.key === 'ArrowLeft') goTo(current - 1);
       if (e.key === 'ArrowRight') goTo(current + 1);
     };
-
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isScreenOpen, current, goTo]);
 
+  // swipe handlers
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX;
+    touchStartY.current = e.touches[0].clientY;
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (touchStartX.current === null || touchStartY.current === null) return;
+    const dx = e.changedTouches[0].clientX - touchStartX.current;
+    const dy = e.changedTouches[0].clientY - touchStartY.current;
+    if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > SWIPE_THRESHOLD) {
+      if (dx < 0) goTo(current + 1);
+      else goTo(current - 1);
+    }
+    touchStartX.current = null;
+    touchStartY.current = null;
+  };
+
   return (
     <>
-      <section className={styles['projector']} role="region" aria-label="Project Archive Carousel">
+      <section
+        className={styles['projector']}
+        role="region"
+        aria-label="Project Archive Carousel"
+        onTouchStart={handleTouchStart}
+        onTouchEnd={handleTouchEnd}
+      >
         <div className={styles['projector__rig']}>
-          <button 
-            className={`${styles['projector__arrow']} ${styles['projector__arrow--left']}`} 
+          <button
+            className={`${styles['projector__arrow']} ${styles['projector__arrow--left']}`}
             onClick={() => goTo(current - 1)}
             aria-label="Previous Project"
           >
             &#9664;
           </button>
-          
+
           <div className={styles['projector__track']}>
             {projects.map((proj, i) => (
-              <ProjectCard 
-                key={proj.id} 
-                project={proj} 
-                index={i} 
-                position={getPosition(i)} 
+              <ProjectCard
+                key={proj.id}
+                project={proj}
+                index={i}
+                position={getPosition(i)}
                 onSelect={() => {
                   if (getPosition(i) === 'center') openScreen(i);
                   else goTo(i);
@@ -121,8 +145,8 @@ const ProjectorCarousel: React.FC<ProjectorCarouselProps> = ({ projects }) => {
             ))}
           </div>
 
-          <button 
-            className={`${styles['projector__arrow']} ${styles['projector__arrow--right']}`} 
+          <button
+            className={`${styles['projector__arrow']} ${styles['projector__arrow--right']}`}
             onClick={() => goTo(current + 1)}
             aria-label="Next Project"
           >
@@ -144,79 +168,58 @@ const ProjectorCarousel: React.FC<ProjectorCarouselProps> = ({ projects }) => {
         ))}
       </div>
 
-      {/* Projector Screen Reveal Overlay */}
+      {/* Expanded project screen */}
       <AnimatePresence>
         {isScreenOpen && (
-          <div 
-            className={styles['screen']} 
-            role="dialog" 
-            aria-modal="true" 
+          <div
+            className={styles['screen']}
+            role="dialog"
+            aria-modal="true"
             aria-labelledby="screen-project-title"
           >
-            <div 
+            <div
               className={`${styles['screen__overlay']} ${isViewerActive ? styles['screen__overlay--open'] : ''}`}
               onClick={closeScreen}
               aria-hidden="true"
             />
-            
+
             <div className={`${styles['screen__content']} ${isViewerActive ? styles['screen__content--active'] : ''} ${isContentVisible ? styles['screen__content--visible'] : ''}`}>
-              <div className={styles['screen__activation']} aria-hidden="true">
-                <span>ARCHIVE VIEWER ACTIVE</span>
-                <span>SIGNAL LOCKED</span>
-              </div>
 
               <div className={styles['screen__bar']}>
                 <span className={styles['screen__bar-title']}>
-                  {(activeProject?.title || '').toLowerCase().replace(/\s+/g,'_')}.md
+                  {(activeProject?.title || '').toLowerCase().replace(/\s+/g, '_')}.md
                 </span>
-                <button 
+                <button
                   ref={closeButtonRef}
-                  className={styles['screen__close']} 
+                  className={styles['screen__close']}
                   onClick={closeScreen}
                   aria-label="Close project view"
                 >
                   [X] CLOSE
                 </button>
               </div>
-              
+
               <div className={styles['screen__body']}>
-                <div className={styles['screen__art-frame']}>
-                  <ProjectCanvas artFn={activeProject?.artFn} scale={10} altText={`Retro art for ${activeProject?.title}`} />
-                </div>
-                
-                <div className={styles['screen__info']}>
-                  <h2 id="screen-project-title" className={styles['screen__project-title']}>{activeProject?.title}</h2>
-                  <div className={styles['screen__project-sub']}>{activeProject?.sub}</div>
-                  
-                  <div style={{ display: 'flex', gap: '.6rem', flexWrap: 'wrap', marginBottom: '.4rem' }}>
+                <div className={styles['screen__left']}>
+                  <div className={styles['screen__art-frame']}>
+                    <ProjectCanvas
+                      artFn={activeProject?.artFn}
+                      scale={10}
+                      altText={`Pixel art for ${activeProject?.title}`}
+                    />
+                  </div>
+
+                  <div className={styles['screen__meta']}>
                     <span className={styles['screen__tag']}>{activeProject?.status}</span>
                     <span className={styles['screen__tag']}>{activeProject?.role}</span>
                     <span className={styles['screen__tag']}>{activeProject?.year}</span>
                   </div>
-                  
-                  <div className={styles['screen__divider']} />
-                  
-                  <h3 className={styles['screen__section-label']}>Overview</h3>
-                  <div 
-                    className={styles['screen__text']} 
-                    dangerouslySetInnerHTML={{ __html: activeProject?.overview || '' }} 
-                  />
-                  
-                  <h3 className={styles['screen__section-label']}>Technical</h3>
-                  <div className={styles['screen__text']}>{activeProject?.technical}</div>
-                  
-                  <h3 className={styles['screen__section-label']}>Stack</h3>
-                  <div className={styles['screen__tags']}>
-                    {activeProject?.tags.map(t => (
-                      <span key={t} className={styles['screen__tag']}>{t}</span>
-                    ))}
-                  </div>
-                  
+
                   <div className={styles['screen__links']}>
                     {activeProject?.links.map(l => (
-                      <a 
-                        key={l.label} 
-                        href={l.href} 
+                      <a
+                        key={l.label}
+                        href={l.href}
                         className={`${styles['screen__link']} ${l.ghost ? styles['screen__link--ghost'] : ''}`}
                         target="_blank"
                         rel="noreferrer"
@@ -225,15 +228,52 @@ const ProjectorCarousel: React.FC<ProjectorCarouselProps> = ({ projects }) => {
                       </a>
                     ))}
                   </div>
+                </div>
 
-                  <div className={styles['screen__divider']} style={{ marginTop: '2rem' }} />
-                  <button 
-                    onClick={closeScreen}
-                    className={styles['screen__link']}
-                    style={{ width: '100%', justifyContent: 'center', marginTop: '1rem', background: 'rgba(255,179,71,0.05)' }}
-                  >
-                    [X] RETURN TO ARCHIVE
-                  </button>
+                <div className={styles['screen__info']}>
+                  <h2 id="screen-project-title" className={styles['screen__project-title']}>
+                    {activeProject?.title}
+                  </h2>
+                  <div className={styles['screen__project-sub']}>{activeProject?.sub}</div>
+
+                  <div className={styles['screen__meta-mobile']}>
+                    <span className={styles['screen__tag']}>{activeProject?.status}</span>
+                    <span className={styles['screen__tag']}>{activeProject?.role}</span>
+                    <span className={styles['screen__tag']}>{activeProject?.year}</span>
+                  </div>
+
+                  <div className={styles['screen__divider']} />
+
+                  <h3 className={styles['screen__section-label']}>Overview</h3>
+                  <div
+                    className={styles['screen__text']}
+                    dangerouslySetInnerHTML={{ __html: activeProject?.overview || '' }}
+                  />
+
+                  <h3 className={styles['screen__section-label']}>Technical</h3>
+                  <div className={styles['screen__text']}>{activeProject?.technical}</div>
+
+                  <h3 className={styles['screen__section-label']}>Stack</h3>
+                  <div className={styles['screen__tags']}>
+                    {activeProject?.tags.map(t => (
+                      <span key={t} className={styles['screen__tag']}>{t}</span>
+                    ))}
+                  </div>
+
+                  {/* links inline on mobile */}
+                  <div className={styles['screen__links-mobile']}>
+                    {activeProject?.links.map(l => (
+                      <a
+                        key={l.label}
+                        href={l.href}
+                        className={`${styles['screen__link']} ${l.ghost ? styles['screen__link--ghost'] : ''}`}
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        {l.label}
+                      </a>
+                    ))}
+                  </div>
                 </div>
               </div>
             </div>
@@ -252,10 +292,8 @@ interface ProjectCardProps {
 }
 
 const ProjectCard: React.FC<ProjectCardProps> = ({ project, index, position, onSelect }) => {
-  const isCenter = position === 'center';
-  
   return (
-    <button 
+    <button
       className={`${styles['slide']} ${styles[`slide--${position}`]}`}
       onClick={onSelect}
       aria-label={`View details for ${project.title}`}
@@ -264,7 +302,6 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, index, position, onS
       <div className={styles['slide__art']} aria-hidden="true">
         <ProjectCanvas artFn={project.artFn} scale={7} />
       </div>
-      
       <div className={styles['slide__info']}>
         <div className={styles['slide__num']}>
           SLIDE {String(index + 1).padStart(2, '0')}
@@ -284,8 +321,8 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, index, position, onS
   );
 };
 
-const ProjectCanvas: React.FC<{ 
-  artFn?: (scale?: number) => HTMLCanvasElement; 
+const ProjectCanvas: React.FC<{
+  artFn?: (scale?: number) => HTMLCanvasElement;
   scale?: number;
   altText?: string;
 }> = ({ artFn, scale = 8, altText }) => {

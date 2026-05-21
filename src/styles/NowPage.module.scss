@@ -11,7 +11,7 @@
     align-items: center;
     gap: 0.6rem;
     font-family: $font-mono;
-    font-size: 0.68rem;
+    font-size: 0.75rem;
     margin-bottom: 1rem;
   }
 
@@ -91,7 +91,7 @@
 
   &__shell-title {
     font-family: $font-mono;
-    font-size: 0.65rem;
+    font-size: 0.75rem;
     letter-spacing: 0.1em;
     color: rgba($color-amber-base, 0.45);
     text-transform: uppercase;
@@ -135,7 +135,7 @@
   }
 
   &__line {
-    font-size: 0.85rem;
+    font-size: 1rem;
     color: rgba($color-amber-base, 0.68);
     line-height: 1.75;
     margin: 0;

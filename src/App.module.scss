@@ -1,6 +1,11 @@
 @use "./styles/variables" as *;
 
 .app {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 100vh;
+
   &__nav {
     position: sticky;
     top: 0;
@@ -82,7 +87,7 @@
 
   &__nav-link {
     font-family: $font-mono;
-    font-size: 0.6875rem;
+    font-size: 0.95rem;
     color: rgba($color-amber-base, 0.85);
     text-transform: uppercase;
     letter-spacing: 0.1em;
@@ -179,7 +184,7 @@
     display: block;
     padding: 0.75rem 1.5rem;
     font-family: $font-mono;
-    font-size: 0.6875rem;
+    font-size: 0.75rem;
     color: rgba($color-amber-base, 0.7);
     text-decoration: none;
     text-transform: uppercase;
@@ -194,7 +199,8 @@
   }
 
   &__main {
-    max-width: 56rem; // 896px
+    flex: 1;
+    max-width: 56rem; 
     width: 100%;
     min-width: 0;
     margin: 0 auto;
@@ -376,7 +382,7 @@
 
   &__badge-container {
     font-family: $font-mono;
-    font-size: 0.625rem;
+    font-size: 0.75rem;
     letter-spacing: 0.3em;
     color: $color-amber-dim;
     text-transform: uppercase;
@@ -430,7 +436,7 @@
     color: rgba($color-amber-base, 0.5);
     line-height: 1.6;
     margin-bottom: 2.5rem;
-    font-size: 0.9375rem;
+    font-size: 1rem;
     font-style: italic;
   }
 
@@ -766,7 +772,7 @@
 
   &__label {
     font-family: $font-mono;
-    font-size: 0.70rem;
+    font-size: 0.875rem;
     color: $color-amber-dim;
     letter-spacing: 0.2em;
   }
@@ -775,7 +781,7 @@
     background: none;
     border: none;
     font-family: $font-mono;
-    font-size: 0.70rem;
+    font-size: 0.875rem;
     color: $color-amber-bright;
     cursor: pointer;
     text-decoration: underline;
@@ -796,7 +802,7 @@
     border: 1px solid rgba($color-amber-base, 0.15);
     padding: 0.4rem 0.8rem;
     font-family: $font-mono;
-    font-size: 0.625rem;
+    font-size: 0.875rem;
     color: rgba($color-amber-base, 0.5);
     cursor: pointer;
     transition: all 0.2s ease;

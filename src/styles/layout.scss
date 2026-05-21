@@ -1,0 +1,76 @@
+@use "variables" as *;
+
+// ── PAGE SHELL ────────────────────────────────────────────
+// Flex column layout so footer always sits at the bottom
+// regardless of page content height.
+
+.layout-main {
+  flex: 1;
+  max-width: 56rem;
+  width: 100%;
+  min-width: 0;
+  margin: 0 auto;
+  padding: 0 1.5rem 6rem;
+
+  @media (max-width: 480px) {
+    padding-inline: 1rem;
+    padding-bottom: 4rem;
+  }
+}
+
+// ── FOOTER ────────────────────────────────────────────────
+
+.layout-footer {
+  border-top: 1px solid rgba($color-amber-base, 0.1);
+  padding: 3rem 0;
+  flex-shrink: 0; // never let footer compress
+
+  &__container {
+    max-width: 80rem;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+
+    @media (min-width: 768px) {
+      flex-direction: row;
+      justify-content: space-between;
+    }
+  }
+
+  &__copy {
+    font-family: $font-mono;
+    font-size: 0.75rem;
+    color: rgba($color-amber-base, 0.7);
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+
+  &__agency {
+    color: $color-amber-base;
+  }
+
+  &__dot {
+    width: 0.25rem;
+    height: 0.25rem;
+    background-color: rgba($color-amber-base, 0.4);
+    border-radius: 50%;
+    display: inline-block;
+    flex-shrink: 0;
+  }
+
+  &__sig {
+    font-family: $font-display;
+    font-size: 1.25rem;
+    color: $color-amber-base;
+    letter-spacing: 0.3em;
+    opacity: 0.9;
+    @include terminal-glow;
+  }
+}
