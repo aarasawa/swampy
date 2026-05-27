@@ -1,0 +1,16 @@
+[
+  {
+    "id": "unique-kebab-case-id",
+    "title": "Book Title",
+    "author": "Author Name",
+    "width": 28,
+    "height": 158,
+    "color": ["#0a0a0a", "#2a2a2a"],
+    "deco": "sword",
+    "rating": 5,
+    "year": "2024",
+    "genre": "Manga",
+    "status": "Complete",
+    "review": "Optional review text. Can include <strong>html tags</strong> for emphasis."
+  }
+]

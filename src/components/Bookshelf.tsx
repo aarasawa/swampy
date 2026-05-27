@@ -139,13 +139,13 @@ const Bookshelf: React.FC<BookshelfProps> = ({ books, category }) => {
                 className={styles['book']}
                 style={{ width: book.width, height: book.height }}
                 onClick={() => openBook(book)}
+                data-title={book.title}
               >
                 <div 
                   className={styles['book__spine']}
                   style={{ background: `linear-gradient(to right, ${book.color[0]}, ${book.color[1]})` }}
                 >
                   <div className={styles['book__title-spine']}>{book.title}</div>
-                  <div className={styles['book__author-spine']}>{book.author}</div>
                 </div>
               </div>
             ))}

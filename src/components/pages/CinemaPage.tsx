@@ -1,7 +1,6 @@
 import React from "react";
 import { motion } from "motion/react";
 import FilmArchive from "../FilmArchive";
-import { FILM_DATA } from "../../lib/data";
 import styles from "../../styles/CinemaPage.module.scss";
 import appStyles from "../../App.module.scss";
 
@@ -21,10 +20,21 @@ const SectionHeader = ({ label, title, id }: { label: string; title: string; id?
   </motion.div>
 );
 
-const CinemaPage: React.FC = () => {
-  const films = FILM_DATA.filter((f: { status?: string }) => f.status === 'Films');
-  const shows = FILM_DATA.filter((f: { status?: string }) => f.status === 'Shows');
-  
+interface Film {
+  title: string;
+  director: string;
+  year: number;
+  rating?: number;
+  status: string;
+  genre?: string;
+  color?: string;
+  review?: string;
+}
+
+const CinemaPage: React.FC<{ films: Film[] }> = ({ films }) => {
+  const filmList = films.filter((f: Film) => f.status === 'Films');
+  const shows = films.filter((f: Film) => f.status === 'Shows');
+
   return (
     <section id="cinema" className={styles['section']} aria-labelledby="cinema-heading" role="region">
       <SectionHeader 
@@ -34,7 +44,7 @@ const CinemaPage: React.FC = () => {
       />
       
       <div className={styles['layout']}>
-        <FilmArchive category="Films" films={films} />
+        <FilmArchive category="Films" films={filmList} />
         <FilmArchive category="Shows" films={shows} />
       </div>
     </section>

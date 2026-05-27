@@ -1,5 +1,5 @@
 import { defineCollection, z } from "astro:content";
-import { glob } from "astro/loaders";
+import { glob, file } from "astro/loaders";
 
 const posts = defineCollection({
   loader: glob({ pattern: "**/*.md", base: "./src/content/posts" }),
@@ -20,4 +20,35 @@ const posts = defineCollection({
   }),
 });
 
-export const collections = { posts };
+const books = defineCollection({
+  loader: file("./src/content/books.json"),
+  schema: z.object({
+    title: z.string(),
+    author: z.string(),
+    width: z.number(),
+    height: z.number(),
+    color: z.tuple([z.string(), z.string()]),
+    deco: z.string(),
+    rating: z.number().min(1).max(5),
+    year: z.string(),
+    genre: z.string(),
+    status: z.string(),
+    review: z.string(),
+  }),
+});
+
+const films = defineCollection({
+  loader: file("./src/content/films.json"),
+  schema: z.object({
+    title: z.string(),
+    director: z.string(),
+    year: z.number(),
+    rating: z.number().min(1).max(5).optional(),
+    status: z.enum(["Films", "Shows"]),
+    genre: z.string().optional(),
+    color: z.string().optional(),
+    review: z.string().optional(),
+  }),
+});
+
+export const collections = { posts, books, films };

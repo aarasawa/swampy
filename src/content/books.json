@@ -1,0 +1,44 @@
+[
+  {
+    "id": "blame",
+    "title": "Blame!",
+    "author": "Tsutomu Nihei",
+    "width": 25,
+    "height": 158,
+    "color": ["#dddddd", "#000000"],
+    "deco": "gun",
+    "rating": 5,
+    "year": "2023",
+    "genre": "Manga",
+    "status": "Complete",
+    "review": "Pure environmental storytelling. Nihei's megastructures are <strong>imposing and strong</strong>. Brought to this work by Dami Lee who talks about architecture on YT. I enjoy having to fill in the gaps in the story since it leaves more up to mystery about how the world functions. "
+  },
+  {
+    "id": "vinland-saga",
+    "title": "Vinland Saga",
+    "author": "Makoto Yukimura",
+    "width": 28,
+    "height": 155,
+    "color": ["#0a1520", "#284560"],
+    "deco": "ship",
+    "rating": 5,
+    "year": "2024",
+    "genre": "Manga",
+    "status": "Ongoing",
+    "review": "A masterpiece regarding the <strong>philosophy of violence</strong>. Watched the anime first while in Japan and then bought the compendium volume."
+  },
+  {
+    "id": "dune",
+    "title": "Dune",
+    "author": "Frank Herbert",
+    "width": 34,
+    "height": 160,
+    "color": ["#1a1202", "#5a4310"],
+    "deco": "dune",
+    "rating": 5,
+    "year": "2024",
+    "genre": "Fiction",
+    "status": "Complete",
+    "review": "The foundation of modern sci-fi. Herbert's <strong>world-building and ecological focus</strong> remain unmatched."
+  }
+]

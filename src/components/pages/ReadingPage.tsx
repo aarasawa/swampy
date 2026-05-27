@@ -1,7 +1,6 @@
 import React from "react";
 import { motion } from "motion/react";
 import Bookshelf from "../Bookshelf";
-import { SHELF_DATA } from "../../lib/data";
 import styles from "../../App.module.scss";
 
 const SectionHeader = ({ label, title, id }: { label: string; title: string; id?: string }) => (
@@ -20,10 +19,24 @@ const SectionHeader = ({ label, title, id }: { label: string; title: string; id?
   </motion.div>
 );
 
-const ReadingPage: React.FC = () => {
-  const manga = SHELF_DATA.filter(b => b.genre === 'Manga');
-  const fiction = SHELF_DATA.filter(b => b.genre === 'Fiction');
-  const tech = SHELF_DATA.filter(b => b.genre === 'Technical');
+interface Book {
+  title: string;
+  author: string;
+  width: number;
+  height: number;
+  color: [string, string];
+  deco: string;
+  rating: number;
+  year: string;
+  genre: string;
+  status: string;
+  review: string;
+}
+
+const ReadingPage: React.FC<{ books: Book[] }> = ({ books }) => {
+  const manga = books.filter(b => b.genre === 'Manga');
+  const fiction = books.filter(b => b.genre === 'Fiction');
+  const nonfiction = books.filter(b => b.genre === 'Nonfiction');
 
   return (
     <section id="reading" className={styles['section']} aria-labelledby="reading-heading" role="region">
@@ -31,7 +44,7 @@ const ReadingPage: React.FC = () => {
       <div style={{ display: 'flex', flexDirection: 'column', gap: '3rem' }}>
         <Bookshelf category="Manga" books={manga} />
         <Bookshelf category="Fiction" books={fiction} />
-        <Bookshelf category="Technical" books={tech} />
+        <Bookshelf category="Nonfiction" books={nonfiction} />
       </div>
     </section>
   );

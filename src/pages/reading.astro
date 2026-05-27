@@ -1,7 +1,11 @@
 ---
+import { getCollection } from 'astro:content';
 import Layout from '../layouts/Layout.astro';
 import ReadingPage from '../components/pages/ReadingPage.tsx';
+
+const allBooks = await getCollection('books');
+const books = allBooks.map((b: { data: any; }) => b.data);
 ---
 <Layout title="Reading — Alex Arasawa">
-  <ReadingPage client:load />
+  <ReadingPage books={books} client:load />
 </Layout>

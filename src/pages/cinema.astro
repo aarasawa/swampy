@@ -1,7 +1,12 @@
 ---
+import { getCollection } from 'astro:content';
 import Layout from '../layouts/Layout.astro';
 import CinemaPage from '../components/pages/CinemaPage.tsx';
+
+const allFilms = await getCollection('films');
+const films = allFilms.map(f => f.data);
 ---
+
 <Layout title="Cinema — Alex Arasawa">
-  <CinemaPage client:load />
+  <CinemaPage films={films} client:load />
 </Layout>
